@@ -1,18 +1,32 @@
-Addressing Modes:
-We have now seen some simple examples of assembly-language programs. In general, a program operates on data that reside in the computer’s memory. These data can be organized in a variety of ways that reflect the nature of the information and how it is used. Programmers use data structures such as lists and arrays for organizing the data used in computations. Programs are normally written in a high-level language, which enables the programmer to conveniently describe the operations to be performed on various data structures. When translating a high-level language program into assembly language, the compiler generates appropriate sequences of low-level instructions that implement the desired operations. The different ways for specifying the locations of instruction operands are known as addressing modes. In this section we present the basic addressing modes found in RISC-style processors. A summary is provided in Table 2.1, which also includes the assembler syntax we will use for each mode. The assembler syntax defines the way in which instructions and the addressing modes of their operands are specified.
+Addressing Modes
 
-Implementation of Variables and Constants:
-Variables are found in almost every computer program. In assembly language, a variable is represented by allocating a register or a memory location to hold its value. This value can be changed as needed using appropriate instructions. The program in uses only two addressing modes to access variables. We access an operand by specifying the name of the register or the address of the memory location where the operand is located. The precise definitions of these two modes are: Register mode—The operand is the contents of a processor register; the name of the register is given in the instruction. Absolute mode—The operand is in a memory location; the address of this location is given explicitly in the instruction. Since in a RISC-style processor an instruction must fit in a single word, the number of bits that can be used to give an absolute address is limited, typically to 16 bits if the word length is 32 bits. To generate a 32-bit address, the 16-bit value is usually extended to 32 bits by replicating bit b15 into bit positions b31−16 (as in sign extension). This means that an absolute address can be specified in this manner for only a limited range of the full address space. We will deal with the issue of specifying full 32-bit addresses in . To keep our examples simple, we will assume for now that all addresses of memory locations involved in a program can be specified in 16 bits. 42 CHAPTER 2 • Instruction Set Architecture The instruction Add R4, R2, R3 uses the Register mode for all three operands. Registers R2 and R3 hold the two source operands, while R4 is the destination. The Absolute mode can represent global variables in a program. A declaration such as Integer NUM1, NUM2, SUM; in a high-level language program will cause the compiler to allocate a memory location to each of the variables NUM1, NUM2, and SUM. Whenever they are referenced later in the program, the compiler can generate assembly-language instructions that use the Absolute mode to access these variables. The Absolute mode is used in the instruction Load R2, NUM1 which loads the value in the memory location NUM1 into register R2. Constants representing data or addresses are also found in almost every computer program. Such constants can be represented in assembly language using the Immediate addressing mode. Immediate mode—The operand is given explicitly in the instruction. For example, the instruction Add R4, R6, 200immediate adds the value 200 to the contents of register R6, and places the result into register R4. Using a subscript to denote the Immediate mode is not appropriate in assembly languages. A common convention is to use the number sign (#) in front of the value to indicate that this value is to be used as an immediate operand. Hence, we write the instruction above in the form Add R4, R6, #200 In the addressing modes that follow, the instruction does not give the operand or its address explicitly. Instead, it provides information from which an effective address (EA) can be derived by the processor when the instruction is executed. The effective address is then used to access the operand.
-Indirection and Pointers:
-In computer architecture, addressing modes are the ways in which machine language instructions identify the location of an operand. Pointers and indirection play a crucial role in some of these addressing modes12.
-Direct Addressing Mode: In direct addressing mode, the address field in the instruction contains the effective address of the operand and no intermediate memory access is required1. For example, Add R1, (1001)1. Here 1001 is the address where the operand is stored1.
-Indirect Addressing Mode: In indirect addressing mode, the address field in the instruction contains the memory location or register where the effective address of the operand is present1. It requires two memory accesses1. It is further classified into two categories: Register Indirect, and Memory Indirect1. For example, LOAD R1, @5001. The above instruction is used to load the content of the memory location stored at memory location 500 to register R11. In other words, we can say, effective address is stored at memory location 5001.
+Programs are normally written in a high-level language, which enables the programmer
+to conveniently describe the operations to be performed on various data structures. When
+translating a high-level language program into assembly language, the compiler generates
+appropriate sequences of low-level instructions that implement the desired operations. The
+different ways for specifying the locations of instruction operands are known as addressing
+modes.
 
-Indexing and arrays:
+Types of Addressing modes:
 
-In computer architecture, indexing and arrays play a significant role in certain addressing modes12345.
-Indexed Addressing Mode: In the indexed addressing mode, the content of a given index register gets added to an instruction’s address part to obtain the effective address4. Here, the index register refers to a special CPU register that consists of an index value4. An instruction’s address field defines the beginning address of any data array present in memory4. The address of the operand is obtained by adding to the contents of the general register (called index register) a constant value5. The number of the index register and the constant value are included in the instruction code5. Index Mode is used to access an array whose elements are in successive memory locations5.
-For example, MOV AX, [SI +05]1. This instruction moves the contents of the memory location addressed by the sum of the content of the index register SI and the displacement 05 to the register AX1.
-Based Indexed Addressing: The operand’s offset is the sum of the content of a base register (BX or BP) and an index register (SI or DI)1. This mode is particularly useful for accessing elements of two-dimensional arrays1.
-Auto Indexed (increment mode): Effective address of the operand is the contents of a register specified in the instruction. After accessing the operand, the contents of this register are automatically incremented to point to the next consecutive memory location1.
-Indexed Addressing and Arrays: Indexed addressing mode is particularly useful when dealing with arrays3. For global arrays with a starting address within the range addressable by the offset, you just put the array’s address in the offset, and use the index register to offset into the array3. For global arrays with a starting address too large for the offset, you have to manually add the starting address to the array index, and use an offset of 03.
+1.Register mode—The operand is the contents of a processor register; the name of the register
+is given in the instruction.
+	Assembler syntax:Ri
+	Example:Add R4, R2, R3
+
+2.Absolute mode—The operand is in a memory location; the address of this location is given
+explicitly in the instruction.
+	Assembler Syntax:LOC
+	Example:Load R2, NUM1
+
+3.Indirect mode—The effective address of the operand is the contents of a register that is
+specified in the instruction.
+	Assembler Syntax:(Ri)
+
+4.Index mode—The effective address of the operand is generated by adding a constant value
+to the contents of a register.
+	Assembler Syntax:X(Ri)
+
+5.Immediate mode—The operand is given explicitly in the instruction.
+	Assembler Syntax:#Value
+	Example:Add R4, R6, 200immediate
